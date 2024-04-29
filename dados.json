@@ -1,0 +1,16 @@
+{
+    "servicos": [
+        {
+            "nome": "eu",
+            "descricao": "",
+            "beneficios": ""
+        }
+    ],
+    "funcionarios": [
+        {
+            "nome": "Paulo",
+            "cargo": "vendedor",
+            "disponivel": true
+        }
+    ]
+}
