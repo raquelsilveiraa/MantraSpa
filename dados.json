@@ -1,16 +1,17 @@
 {
     "servicos": [
         {
-            "nome": "eu",
-            "descricao": "",
-            "beneficios": ""
+            "nome": "iwniwdn",
+            "descricao": "somskosm",
+            "beneficios": "eokmedkm",
+            "local": "wokdwpe"
         }
     ],
-    "funcionarios": [
+    "funcionarios": [],
+    "vendas": [
         {
-            "nome": "Paulo",
-            "cargo": "vendedor",
-            "disponivel": true
+            "valor": "15",
+            "servico": "Massagem"
         }
     ]
 }
