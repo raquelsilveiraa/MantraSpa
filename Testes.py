@@ -1,44 +1,69 @@
-
-from Servico import Servico
-from Funcionario import Funcionario
-from Agenda import Agenda
-from Vendas import Vendas
-
-servico1 = Servico("Massagem Relaxante", "Uma massagem que promove relaxamento muscular", "Reduz o estresse, alivia dores musculares", "Sala de Massagem 1")
-servico2 = Servico("Tratamento Facial", "Um tratamento para a pele do rosto", "Limpa os poros, promove a renovação celular", "Sala de Estética Facial")
-
-print("Informações sobre os serviços:")
-print(servico1)
-print(servico2)
-print()
+import unittest
+from unittest.mock import patch
+from tkinter import Tk
+from tkinter.messagebox import showinfo, showerror
+from io import StringIO
+import json
+from Testes import Servico, Funcionario, Agenda, Vendas, GerenciadorApp
 
 
-funcionario1 = Funcionario("Maria", "Massoterapeuta")
-funcionario2 = Funcionario("João", "Esteticista")
+class TestarServico(unittest.TestCase):
+    def testar_servico_str(self):
+        gereciamento_servico = Servico("Massagem", "Massagem redutora", "Diminui medidas e proporciona relaxamento", "Sala 22")
+        expected_output = "Nome: Massagem\nDescrição: Massagem redutora\nBenefícios: Diminuição de medida e proporciona relaxamento\nLocalização: Sala 22"
+        self.assertEqual(str(gereciamento_servico), expected_output)
 
-print("Informações sobre os funcionários:")
-print(funcionario1)
-print(funcionario2)
-print()
+class TestarVendas(unittest.TestCase):
+    def setUp(self):
+        self.vendas = Vendas()
+
+    def testar_registro_de_venda(self):
+        registrar_servico = Servico("Massagem", "Massagem redutora", "Diminuição de medidas e proporciona relaxamento", "Sala 22")
+        self.vendas.registrar_venda(100, registrar_servico)
+        self.assertEqual(len(self.vendas.fluxo_de_caixa), 1)
+
+    def testar_exibicao_fluxo_de_caixa(self):
+        exibicao_servico1 = Servico("Massagem", "Massagem redutora", "Diminuição de medidas e proporciona relaxamento", "Sala 22")
+        exibicao_servico2 = Servico("Peeling Facial", "Hidratação da pele e Adição de ácido ", "Renovação da pele, melhoramento do aspecto e viço da pele", "Sala 08")
+        self.vendas.registrar_venda(100, exibicao_servico1)
+        self.vendas.registrar_venda(150, exibicao_servico2)
+        expected_output = ["Serviço: Massagem, Valor: R$100", "Serviço: Peeling Facial, Valor: R$250"]
+        self.assertEqual(self.vendas.exibir_fluxo_de_caixa(), expected_output)
 
 
-agenda = Agenda()
+class Testar_funcionario(unittest.TestCase):
+    def testar_funcionario_str(self):
+        gereciamento_funcionario = Funcionario("Carla", "Massoterapeuta")
+        expected_output = "Nome: Carla\nCargo: Massoterapeuta\nDisponível: Sim"
+        self.assertEqual(str(gerenciamento_funcionario), expected_output)
 
-agenda.agendar_servico(servico1, "15/05/2024", "14:00")
-agenda.agendar_servico(servico2, "17/05/2024", "10:30")
-agenda.agendar_servico(servico1, "20/05/2024", "16:00")
+    def testar_disponibilidade_funcionario_default(self):
+        gerencia_funcionario = Funcionario("Amanda", "Recepcionista")
+        self.assertTrue(gerencia_funcionario.disponivel)
+
+    def test_disponibilidade_funcionario_false(self):
+        disponibilidade_funcionario = Funcionario("Manuela", "Esteticista", disponivel=False)
+        self.assertFalse(disponibilidade_funcionario.disponivel)
+
+class TestarAgenda(unittest.TestCase):
+    def setUp(self):
+        self.agenda = Agenda()
+
+    def testar_agendamento_de_servico(self):
+        agendamento_servico = Servico("Massagem", "Massagem redutora", "Diminuição de medidas e proporciona relaxamento", "Sala 22")
+        self.agenda.agendar_servico(servico, "2024-04-12", "15:00")
+        self.assertEqual(len(self.agenda.horarios_disponiveis), 1)
+
+    def testar_horarios_disponiveis(self):
+        servico = Servico("Massagem", "Massagem redutora", "Diminuição de medidas e proporciona relaxamento", "Sala 22"")
+        self.agenda.agendar_servico(servico, "2024-05-05", "15:00")
+        self.agenda.agendar_servico(servico, "2024-05-06", "09:00")
+        expected_output = ["2024-04-12 - 15:00: Massagem", "2024-05-08 - 09:00: Massagem"]
+        self.assertEqual(self.agenda.horarios_disponiveis(), expected_output)
 
 
-print("Horários disponíveis na agenda:")
-print(agenda.listar_horarios_disponiveis())
-print()
 
-vendas = Vendas()
 
-vendas.registrar_venda(150.00, servico1)
-vendas.registrar_venda(200.00, servico2)
-vendas.registrar_venda(100.00, servico1)
 
-print("Fluxo de Caixa:")
-print(vendas.exibir_fluxo_de_caixa())
-print()
+
+
