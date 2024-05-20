@@ -242,24 +242,27 @@ class GerenciadorApp:
         window_agendar = Toplevel()
         window_agendar.title("Agendar Serviço")
         window_agendar.geometry("400x400")
-
-        
+        window_agendar.configure(bg="#E6E6FA")
+        lbl_selecione_servico = Label(window_agendar, text="Selecione o serviço:", font=("Albert Sans", 14), bg="#E6E6FA")
+        lbl_selecione_servico.pack(pady=10)
 
         listbox_servicos = Listbox(window_agendar, font=("Albert Sans", 12), selectmode=SINGLE)
         listbox_servicos.pack(expand=True, fill=BOTH)
 
         for servico in self.servicos:
             listbox_servicos.insert(END, servico.nome)
+        frame_data_horario = Frame(window_agendar, bg="#E6E6FA")
+        frame_data_horario.pack(pady=20)
 
-        lbl_data = Label(window_agendar, text="Data:", font=("Albert Sans", 14))
-        lbl_data.pack(pady=10)
-        entry_data = ttk.Entry(window_agendar, textvariable=self.data_var, font=("Albert Sans", 12))
-        entry_data.pack()
+        lbl_data = Label(frame_data_horario, text="Data:DD/MM/AA", font=("Albert Sans", 14), bg="#E6E6FA")
+        lbl_data.grid(row=0, column=0, padx=10, pady=5)
+        entry_data = ttk.Entry(frame_data_horario, textvariable=self.data_var, font=("Albert Sans", 12))
+        entry_data.grid(row=0, column=1, padx=10, pady=5)
 
-        lbl_horario = Label(window_agendar, text="Horário:", font=("Albert Sans", 14))
-        lbl_horario.pack(pady=10)
-        entry_horario = ttk.Entry(window_agendar, textvariable=self.horario_var, font=("Albert Sans", 12))
-        entry_horario.pack()
+        lbl_horario = Label(frame_data_horario, text="Horário:HH:MM", font=("Albert Sans", 14), bg="#E6E6FA")
+        lbl_horario.grid(row=1, column=0, padx=10, pady=5)
+        entry_horario = ttk.Entry(frame_data_horario, textvariable=self.horario_var, font=("Albert Sans", 12))
+        entry_horario.grid(row=1, column=1, padx=10, pady=5)
 
         btn_agendar = Button(window_agendar, text="Agendar", font=("Albert Sans", 14), command=agendar)
         btn_agendar.pack(pady=20)

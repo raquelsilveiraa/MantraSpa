@@ -14,16 +14,5 @@
             "servico": "Massagem"
         }
     ],
-    "agendamentos": [
-        {
-            "data": "20/05/2024",
-            "horario": "19:30",
-            "servico": {
-                "nome": "iwniwdn",
-                "descricao": "somskosm",
-                "beneficios": "eokmedkm",
-                "local": "wokdwpe"
-            }
-        }
-    ]
+    "agendamentos": []
 }
