@@ -21,6 +21,8 @@ class GerenciadorApp:
 
         self.carregar_dados()
         self.menu_principal()
+        self.data_var = StringVar()
+        self.horario_var = StringVar()
     
     def carregar_dados(self):
         try:
@@ -36,8 +38,17 @@ class GerenciadorApp:
         dados = {
             "servicos": [vars(servico) for servico in self.servicos],
             "funcionarios": [vars(funcionario) for funcionario in self.funcionarios],
-            "vendas": self.vendas.fluxo_de_caixa
+            "vendas": self.vendas.fluxo_de_caixa,
+            "agendamentos": []
         }
+        for data, horarios in self.agenda.horarios_disponiveis.items():
+         for horario, servico in horarios:
+            agendamento = {
+                "data": data,
+                "horario": horario,
+                "servico": vars(servico)
+            }
+            dados["agendamentos"].append(agendamento)
         with open("dados.json", "w") as file:
             json.dump(dados, file, indent=4)
     
@@ -209,18 +220,30 @@ class GerenciadorApp:
             except ValueError:
                 messagebox.showerror("Erro", "Formato de data inválido. Use DD/MM/AAAA.")
                 return
-
+            data = self.data_var.get()
+            horario = self.horario_var.get()
+            data_atual = datetime.now().date()
+            data_agendamento = datetime.strptime(data, "%d/%m/%Y").date()
+            if data_agendamento <= data_atual:
+                messagebox.showerror("Erro", "Não é possível agendar para uma data passada ou presente.")
+                return
+            try:
+                datetime.strptime(horario, "%H:%M")
+            except ValueError:
+                messagebox.showerror("Erro", "Formato de horário inválido. Use HH:MM.")
+                return
             mensagem = self.agenda.agendar_servico(servico, data, horario)
+
             messagebox.showinfo("Sucesso", mensagem)
             self.salvar_dados()
             window_agendar.destroy()
+
 
         window_agendar = Toplevel()
         window_agendar.title("Agendar Serviço")
         window_agendar.geometry("400x400")
 
-        lbl_servico = Label(window_agendar, text="Selecione o serviço:", font=("Albert Sans", 14))
-        lbl_servico.pack(pady=10)
+        
 
         listbox_servicos = Listbox(window_agendar, font=("Albert Sans", 12), selectmode=SINGLE)
         listbox_servicos.pack(expand=True, fill=BOTH)
@@ -228,16 +251,14 @@ class GerenciadorApp:
         for servico in self.servicos:
             listbox_servicos.insert(END, servico.nome)
 
-        lbl_data = Label(window_agendar, text="Data (DD/MM/AAAA):", font=("Albert Sans", 14))
+        lbl_data = Label(window_agendar, text="Data:", font=("Albert Sans", 14))
         lbl_data.pack(pady=10)
-
-        entry_data = Entry(window_agendar, font=("Albert Sans", 12))
+        entry_data = ttk.Entry(window_agendar, textvariable=self.data_var, font=("Albert Sans", 12))
         entry_data.pack()
 
         lbl_horario = Label(window_agendar, text="Horário:", font=("Albert Sans", 14))
         lbl_horario.pack(pady=10)
-
-        entry_horario = Entry(window_agendar, font=("Albert Sans", 12))
+        entry_horario = ttk.Entry(window_agendar, textvariable=self.horario_var, font=("Albert Sans", 12))
         entry_horario.pack()
 
         btn_agendar = Button(window_agendar, text="Agendar", font=("Albert Sans", 14), command=agendar)
