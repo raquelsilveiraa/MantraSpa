@@ -1,6 +1,30 @@
 {
-    "servicos": [],
-    "funcionarios": [],
+    "servicos": [
+        {
+            "nome": "Massagem",
+            "descricao": "Completa",
+            "beneficios": "Dor nas costas",
+            "local": "Centro de est\u00e9tica"
+        }
+    ],
+    "funcionarios": [
+        {
+            "nome": "Wilton",
+            "cargo": "Gerente",
+            "disponivel": true
+        }
+    ],
     "vendas": [],
-    "agendamentos": []
+    "agendamentos": [
+        {
+            "data": "21/05/2024",
+            "horario": "20:12",
+            "servico": {
+                "nome": "Massagem",
+                "descricao": "Completa",
+                "beneficios": "Dor nas costas",
+                "local": "Centro de est\u00e9tica"
+            }
+        }
+    ]
 }

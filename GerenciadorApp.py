@@ -55,7 +55,6 @@ class GerenciadorApp:
         try:
             with open("dados.json", "r") as file:
                 dados = json.load(file)
-                print("Dados carregados do arquivo JSON:", dados)  # Adicionando este print para verificar os dados carregados
                 return dados.get("agendamentos", [])
         except FileNotFoundError:
             return []
