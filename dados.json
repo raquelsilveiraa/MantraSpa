@@ -1,18 +1,6 @@
 {
-    "servicos": [
-        {
-            "nome": "iwniwdn",
-            "descricao": "somskosm",
-            "beneficios": "eokmedkm",
-            "local": "wokdwpe"
-        }
-    ],
+    "servicos": [],
     "funcionarios": [],
-    "vendas": [
-        {
-            "valor": "15",
-            "servico": "Massagem"
-        }
-    ],
+    "vendas": [],
     "agendamentos": []
 }

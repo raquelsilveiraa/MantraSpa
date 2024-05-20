@@ -33,7 +33,7 @@ class GerenciadorApp:
                 self.vendas.fluxo_de_caixa = dados.get("vendas", [])
         except FileNotFoundError:
             pass
-
+    
     def salvar_dados(self):
         dados = {
             "servicos": [vars(servico) for servico in self.servicos],
@@ -51,7 +51,36 @@ class GerenciadorApp:
             dados["agendamentos"].append(agendamento)
         with open("dados.json", "w") as file:
             json.dump(dados, file, indent=4)
-    
+    def carregar_agendamentos(self):
+        try:
+            with open("dados.json", "r") as file:
+                dados = json.load(file)
+                print("Dados carregados do arquivo JSON:", dados)  # Adicionando este print para verificar os dados carregados
+                return dados.get("agendamentos", [])
+        except FileNotFoundError:
+            return []
+
+    def ver_horarios_agendados(self):
+        agendamentos = self.carregar_agendamentos() 
+        if agendamentos:
+            window = Toplevel(self.master)
+            window.title("Horários Agendados")
+            window.geometry("400x400")
+
+            frame_agendamentos = Frame(window)
+            frame_agendamentos.pack(padx=20, pady=20)
+
+            lbl_titulo = Label(frame_agendamentos, text="Horários Agendados", font=("Albert Sans", 18, "bold"))
+            lbl_titulo.pack(pady=10)
+
+            for i, agendamento in enumerate(agendamentos):
+                lbl_agendamento = Label(frame_agendamentos, text=f"{agendamento['data']} às {agendamento['horario']}: {agendamento['servico']['nome']}", font=("Albert Sans", 12))
+                lbl_agendamento.pack(anchor="w", padx=10, pady=5)
+        else:
+            messagebox.showinfo("Informação", "Não há horários agendados.")
+
+        
+
     def menu_principal(self):
         self.limpar_tela()
 
@@ -72,6 +101,10 @@ class GerenciadorApp:
 
         btn_vendas = Button(frame_botoes, text="Gerenciar Vendas", font=("Albert Sans", 18), command=self.menu_vendas, bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
         btn_vendas.grid(row=1, column=1, padx=10, pady=10)
+
+        btn_ver_horarios = Button(frame_botoes, text="Ver Horários Agendados", font=("Albert Sans", 18), command=self.ver_horarios_agendados, bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
+        btn_ver_horarios.grid(row=3, column=0, columnspan=4, padx=10, pady=10)
+
 
         self.master.protocol("WM_DELETE_WINDOW", self.fechar_aplicacao)
 
