@@ -14,9 +14,9 @@ class Agenda:
         except FileNotFoundError:
             return []
 
-    def agendar_servico(self, servico, data, horario):
+    def agendar_servico(self, servico, data, horario, cliente):
         # Verificar se o horário já está ocupado
-        if data in self.horarios_disponiveis and horario in [horario_agendado for horario_agendado, _ in self.horarios_disponiveis[data]]:
+        if data in self.horarios_disponiveis and horario in [horario_agendado for horario_agendado, _, _ in self.horarios_disponiveis[data]]:
             return "Este horário já está ocupado. Por favor, selecione outro horário."
 
         data_atual = datetime.now().date()
@@ -31,13 +31,14 @@ class Agenda:
        
         if data not in self.horarios_disponiveis:
             self.horarios_disponiveis[data] = []
-        self.horarios_disponiveis[data].append((horario, servico))
+        self.horarios_disponiveis[data].append((horario, servico, cliente))
 
         # Adicionar agendamento à lista de agendamentos
         novo_agendamento = {
             "data": data,
             "horario": horario,
-            "servico": vars(servico)
+            "servico": vars(servico),
+            "cliente": cliente
         }
         self.agendamentos.append(novo_agendamento)
 
