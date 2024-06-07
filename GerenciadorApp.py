@@ -2,17 +2,87 @@ from tkinter import *
 from tkinter import ttk, messagebox
 from datetime import datetime
 import json
-from Servico import Servico
-from Funcionario import Funcionario
-from Agenda import Agenda
-from Vendas import Vendas
 
+class Servico:
+    def __init__(self, nome, descricao, beneficios, local):
+        self.nome = nome
+        self.descricao = descricao
+        self.beneficios = beneficios
+        self.local = local
+
+    def __str__(self):
+        return f"Nome: {self.nome}\nDescrição: {self.descricao}\nBenefícios: {self.beneficios}\nLocalização: {self.local}"
+
+class Funcionario:
+    def __init__(self, nome, cargo, disponivel=True):
+        self.nome = nome
+        self.cargo = cargo
+        self.disponivel = disponivel
+
+    def __str__(self):
+        return f"Nome: {self.nome}\nCargo: {self.cargo}\nDisponível: {'Sim' if self.disponivel else 'Não'}"
+
+class Agenda:
+    def __init__(self):
+        self.horarios_disponiveis = {}
+        self.agendamentos = self.carregar_agendamentos()
+
+    def carregar_agendamentos(self):
+        try:
+            with open("dados.json", "r") as file:
+                dados = json.load(file)
+                return dados.get("agendamentos", [])
+        except FileNotFoundError:
+            return []
+
+    def agendar_servico(self, servico, data, horario, cliente):
+        if data in self.horarios_disponiveis and horario in [horario_agendado for horario_agendado, _, _ in self.horarios_disponiveis[data]]:
+            return "Este horário já está ocupado. Por favor, selecione outro horário."
+
+        data_atual = datetime.now().date()
+        data_agendamento = datetime.strptime(data, "%d/%m/%Y").date()
+        if data_agendamento <= data_atual:
+            return "Não é possível agendar para uma data passada ou presente."
+        
+        try:
+            datetime.strptime(horario, "%H:%M")
+        except ValueError:
+            return "Formato de horário inválido. Use HH:MM."
+
+        if data not in self.horarios_disponiveis:
+            self.horarios_disponiveis[data] = []
+        self.horarios_disponiveis[data].append((horario, servico, cliente))
+
+        novo_agendamento = {
+            "data": data,
+            "horario": horario,
+            "servico": vars(servico),
+            "cliente": cliente
+        }
+        self.agendamentos.append(novo_agendamento)
+        return "Serviço agendado com sucesso."
+
+class Vendas:
+    def __init__(self):
+        self.fluxo_de_caixa = []
+
+    def registrar_venda(self, valor, servico):
+        self.fluxo_de_caixa.append({"valor": valor, "servico": servico.nome})
+        return "Venda registrada com sucesso."
+
+    def exibir_fluxo_de_caixa(self):
+        registros = []
+        if self.fluxo_de_caixa:
+            for venda in self.fluxo_de_caixa:
+                registros.append(f"Serviço: {venda['servico']}, Valor: R${venda['valor']}")
+        return registros
 
 class GerenciadorApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Sistema de Gerenciamento")
         self.master.geometry("800x600")
+        self.master.configure(bg="#f0f0f0")
 
         self.servicos = []
         self.funcionarios = []
@@ -26,7 +96,7 @@ class GerenciadorApp:
         self.data_var = StringVar()
         self.horario_var = StringVar()
         self.cliente_var = StringVar()
-    
+
     def carregar_dados(self):
         try:
             with open("dados.json", "r") as file:
@@ -38,7 +108,7 @@ class GerenciadorApp:
                 self.promocoes = dados.get("promocoes", [])
         except FileNotFoundError:
             pass
-    
+
     def salvar_dados(self):
         dados = {
             "servicos": [vars(servico) for servico in self.servicos],
@@ -59,30 +129,23 @@ class GerenciadorApp:
                 dados["agendamentos"].append(agendamento)
         with open("dados.json", "w") as file:
             json.dump(dados, file, indent=4)
-    
-    def carregar_agendamentos(self):
-        try:
-            with open("dados.json", "r") as file:
-                dados = json.load(file)
-                return dados.get("agendamentos", [])
-        except FileNotFoundError:
-            return []
 
     def ver_horarios_agendados(self):
-        agendamentos = self.carregar_agendamentos()
+        agendamentos = self.agenda.carregar_agendamentos()
         if agendamentos:
             window = Toplevel(self.master)
             window.title("Horários Agendados")
             window.geometry("400x400")
+            window.configure(bg="#f0f0f0")
 
-            frame_agendamentos = Frame(window)
+            frame_agendamentos = Frame(window, bg="#f0f0f0")
             frame_agendamentos.pack(padx=20, pady=20)
 
-            lbl_titulo = Label(frame_agendamentos, text="Horários Agendados", font=("Albert Sans", 18, "bold"))
+            lbl_titulo = Label(frame_agendamentos, text="Horários Agendados", font=("Albert Sans", 18, "bold"), bg="#f0f0f0")
             lbl_titulo.pack(pady=10)
 
-            for i, agendamento in enumerate(agendamentos):
-                lbl_agendamento = Label(frame_agendamentos, text=f"{agendamento['data']} às {agendamento['horario']}: {agendamento['servico']['nome']} - Cliente: {agendamento['cliente']}", font=("Albert Sans", 12))
+            for agendamento in agendamentos:
+                lbl_agendamento = Label(frame_agendamentos, text=f"{agendamento['data']} às {agendamento['horario']}: {agendamento['servico']['nome']} - Cliente: {agendamento['cliente']}", font=("Albert Sans", 12), bg="#f0f0f0")
                 lbl_agendamento.pack(anchor="w", padx=10, pady=5)
         else:
             messagebox.showinfo("Informação", "Não há horários agendados.")
@@ -165,29 +228,30 @@ class GerenciadorApp:
             self.salvar_dados()
             window_add_servico.destroy()
 
-        window_add_servico = Toplevel()
+        window_add_servico = Toplevel(self.master)
         window_add_servico.title("Adicionar Serviço")
         window_add_servico.geometry("400x400")
+        window_add_servico.configure(bg="#f0f0f0")
 
-        lbl_nome = Label(window_add_servico, text="Nome:", font=("Albert Sans", 14))
+        lbl_nome = Label(window_add_servico, text="Nome:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_nome.pack(pady=10)
 
         entry_nome = Entry(window_add_servico, font=("Albert Sans", 12))
         entry_nome.pack()
 
-        lbl_descricao = Label(window_add_servico, text="Descrição:", font=("Albert Sans", 14))
+        lbl_descricao = Label(window_add_servico, text="Descrição:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_descricao.pack(pady=10)
 
         entry_descricao = Text(window_add_servico, font=("Albert Sans", 12), height=5, width=30)
         entry_descricao.pack()
 
-        lbl_beneficios = Label(window_add_servico, text="Benefícios:", font=("Albert Sans", 14))
+        lbl_beneficios = Label(window_add_servico, text="Benefícios:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_beneficios.pack(pady=10)
 
         entry_beneficios = Text(window_add_servico, font=("Albert Sans", 12), height=5, width=30)
         entry_beneficios.pack()
 
-        lbl_localizacao = Label(window_add_servico, text="Localização:", font=("Albert Sans", 14))
+        lbl_localizacao = Label(window_add_servico, text="Localização:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_localizacao.pack(pady=10)
 
         entry_localizacao = Text(window_add_servico, font=("Albert Sans", 12), height=5, width=30)
@@ -207,8 +271,11 @@ class GerenciadorApp:
 
         if self.servicos:
             for i, servico in enumerate(self.servicos):
-                servico_info = Label(frame_servicos, text=servico.__str__(), font=("Albert Sans", 12))
+                servico_info = Label(frame_servicos, text=servico.__str__(), font=("Albert Sans", 12), bg="#f0f0f0")
                 servico_info.grid(row=i, column=0, sticky="w", pady=5)
+        else:
+            lbl_aviso = Label(frame_servicos, text="Não há serviços cadastrados.", font=("Albert Sans", 14), bg="#f0f0f0")
+            lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
         btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.menu_principal)
         btn_voltar.pack()
@@ -226,11 +293,12 @@ class GerenciadorApp:
             window_remover_servico.destroy()
             self.menu_servicos()
 
-        window_remover_servico = Toplevel()
+        window_remover_servico = Toplevel(self.master)
         window_remover_servico.title("Remover Serviço")
         window_remover_servico.geometry("400x300")
+        window_remover_servico.configure(bg="#f0f0f0")
 
-        lbl_selecione = Label(window_remover_servico, text="Selecione o serviço:", font=("Albert Sans", 14))
+        lbl_selecione = Label(window_remover_servico, text="Selecione o serviço:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_selecione.pack(pady=10)
 
         listbox_servicos = Listbox(window_remover_servico, font=("Albert Sans", 12), selectmode=SINGLE)
@@ -282,11 +350,12 @@ class GerenciadorApp:
                 window_agendar.destroy()
             messagebox.showinfo("Informação", mensagem)
 
-        window_agendar = Toplevel()
+        window_agendar = Toplevel(self.master)
         window_agendar.title("Agendar Serviço")
         window_agendar.geometry("400x400")
+        window_agendar.configure(bg="#f0f0f0")
 
-        lbl_selecione_servico = Label(window_agendar, text="Selecione o serviço:", font=("Albert Sans", 14))
+        lbl_selecione_servico = Label(window_agendar, text="Selecione o serviço:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_selecione_servico.pack(pady=10)
 
         listbox_servicos = Listbox(window_agendar, font=("Albert Sans", 12), selectmode=SINGLE)
@@ -295,20 +364,20 @@ class GerenciadorApp:
         for servico in self.servicos:
             listbox_servicos.insert(END, servico.nome)
 
-        frame_data_horario = Frame(window_agendar)
+        frame_data_horario = Frame(window_agendar, bg="#f0f0f0")
         frame_data_horario.pack(pady=20)
 
-        lbl_data = Label(frame_data_horario, text="Data:", font=("Albert Sans", 14))
+        lbl_data = Label(frame_data_horario, text="Data:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_data.grid(row=0, column=0, padx=10, pady=5)
         entry_data = Entry(frame_data_horario, textvariable=self.data_var, font=("Albert Sans", 12))
         entry_data.grid(row=0, column=1, padx=10, pady=5)
 
-        lbl_horario = Label(frame_data_horario, text="Horário:", font=("Albert Sans", 14))
+        lbl_horario = Label(frame_data_horario, text="Horário:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_horario.grid(row=1, column=0, padx=10, pady=5)
         entry_horario = Entry(frame_data_horario, textvariable=self.horario_var, font=("Albert Sans", 12))
         entry_horario.grid(row=1, column=1, padx=10, pady=5)
 
-        lbl_cliente = Label(frame_data_horario, text="Cliente:", font=("Albert Sans", 14))
+        lbl_cliente = Label(frame_data_horario, text="Cliente:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_cliente.grid(row=2, column=0, padx=10, pady=5)
         entry_cliente = Entry(frame_data_horario, textvariable=self.cliente_var, font=("Albert Sans", 12))
         entry_cliente.grid(row=2, column=1, padx=10, pady=5)
@@ -353,6 +422,7 @@ class GerenciadorApp:
         window = Toplevel(self.master)
         window.title("Adicionar Funcionário")
         window.geometry("400x300")
+        window.configure(bg="#f0f0f0")
 
         frame = Frame(window, bg="#f0f0f0")
         frame.pack(pady=20)
@@ -404,6 +474,7 @@ class GerenciadorApp:
         window = Toplevel(self.master)
         window.title("Remover Funcionário")
         window.geometry("300x150")
+        window.configure(bg="#f0f0f0")
 
         frame = Frame(window, bg="#f0f0f0")
         frame.pack(pady=20)
@@ -449,6 +520,7 @@ class GerenciadorApp:
         window = Toplevel(self.master)
         window.title("Registrar Venda")
         window.geometry("400x200")
+        window.configure(bg="#f0f0f0")
 
         frame = Frame(window, bg="#f0f0f0")
         frame.pack(pady=20)
@@ -523,8 +595,9 @@ class GerenciadorApp:
         window = Toplevel(self.master)
         window.title("Adicionar Promoção")
         window.geometry("400x200")
+        window.configure(bg="#f0f0f0")
 
-        lbl_descricao = Label(window, text="Descrição:", font=("Albert Sans", 14))
+        lbl_descricao = Label(window, text="Descrição:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_descricao.pack(pady=10)
 
         entry_descricao = Text(window, font=("Albert Sans", 12), height=5, width=30)
@@ -567,8 +640,9 @@ class GerenciadorApp:
         window = Toplevel(self.master)
         window.title("Remover Promoção")
         window.geometry("400x300")
+        window.configure(bg="#f0f0f0")
 
-        lbl_selecione = Label(window, text="Selecione a promoção:", font=("Albert Sans", 14))
+        lbl_selecione = Label(window, text="Selecione a promoção:", font=("Albert Sans", 14), bg="#f0f0f0")
         lbl_selecione.pack(pady=10)
 
         listbox_promocoes = Listbox(window, font=("Albert Sans", 12), selectmode=SINGLE)
@@ -603,4 +677,3 @@ class GerenciadorApp:
 root = Tk()
 app = GerenciadorApp(root)
 root.mainloop()
-

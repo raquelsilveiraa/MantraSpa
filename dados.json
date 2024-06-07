@@ -22,17 +22,5 @@
     ],
     "avaliacoes": [],
     "promocoes": [],
-    "agendamentos": [
-        {
-            "data": "19/10/2024",
-            "horario": "19:00",
-            "servico": {
-                "nome": "Massagem",
-                "descricao": "Completa",
-                "beneficios": "Dor nas costas",
-                "local": "Centro de est\u00e9tica"
-            },
-            "cliente": "Maria"
-        }
-    ]
+    "agendamentos": []
 }
