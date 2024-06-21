@@ -92,7 +92,7 @@ class GerenciadorApp:
         self.promocoes = []
 
         self.carregar_dados()
-        self.menu_principal()
+        self.menu_login()
         self.data_var = StringVar()
         self.horario_var = StringVar()
         self.cliente_var = StringVar()
@@ -149,6 +149,36 @@ class GerenciadorApp:
                 lbl_agendamento.pack(anchor="w", padx=10, pady=5)
         else:
             messagebox.showinfo("Informação", "Não há horários agendados.")
+
+    def menu_login(self):
+        self.limpar_tela()
+
+        lbl_titulo = Label(self.master, text="Mantra SPA - Login", font=("Albert Sans", 36, "bold"), bg="#FFC0CB", fg="black", padx=20, pady=10)
+        lbl_titulo.pack(fill=X)
+
+        frame_login = Frame(self.master, bg="#f0f0f0", padx=20, pady=20)
+        frame_login.pack(pady=20)
+
+        lbl_usuario = Label(frame_login, text="Usuário:", font=("Albert Sans", 18), bg="#f0f0f0")
+        lbl_usuario.grid(row=0, column=0, pady=10, sticky=E)
+
+        entry_usuario = Entry(frame_login, font=("Albert Sans", 18))
+        entry_usuario.grid(row=0, column=1, pady=10, padx=10)
+
+        lbl_senha = Label(frame_login, text="Senha:", font=("Albert Sans", 18), bg="#f0f0f0")
+        lbl_senha.grid(row=1, column=0, pady=10, sticky=E)
+
+        entry_senha = Entry(frame_login, font=("Albert Sans", 18), show="*")
+        entry_senha.grid(row=1, column=1, pady=10, padx=10)
+
+        btn_login = Button(frame_login, text="Login", font=("Albert Sans", 18), command=lambda: self.validar_login(entry_usuario.get(), entry_senha.get()), bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
+        btn_login.grid(row=2, column=0, columnspan=2, pady=20)
+
+    def validar_login(self, usuario, senha):
+        if usuario == "admin" and senha == "123456":
+            self.menu_principal()
+        else:
+            messagebox.showerror("Erro", "Usuário ou senha incorretos.")
 
     def menu_principal(self):
         self.limpar_tela()
