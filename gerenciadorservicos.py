@@ -3,10 +3,11 @@ from tkinter import messagebox
 from Servico import Servico
 
 class GerenciadorServicos:
-    def __init__(self, master, servicos, salvar_dados_callback):
+    def __init__(self, master, servicos, salvar_dados_callback, voltar_callback):
         self.master = master
         self.servicos = servicos
         self.salvar_dados_callback = salvar_dados_callback
+        self.voltar_callback = voltar_callback
 
     def menu_servicos(self):
         self.limpar_tela()
@@ -26,7 +27,7 @@ class GerenciadorServicos:
         btn_remover_servico = Button(frame_botoes, text="Remover Serviço", font=("Albert Sans", 14), command=self.remover_servico)
         btn_remover_servico.grid(row=1, column=0, columnspan=2, pady=10)
 
-        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.grid(row=2, column=0, columnspan=2, pady=10)
 
     def adicionar_servico(self):
@@ -95,7 +96,7 @@ class GerenciadorServicos:
             lbl_aviso = Label(frame_servicos, text="Não há serviços cadastrados.", font=("Albert Sans", 14), bg="#f0f0f0")
             lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
-        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.pack()
 
     def remover_servico(self):
@@ -127,13 +128,6 @@ class GerenciadorServicos:
 
         btn_remover = Button(window_remover_servico, text="Remover", font=("Albert Sans", 14), command=remover)
         btn_remover.pack(pady=20)
-
-    def voltar(self):
-        from gerenciador_app import GerenciadorApp
-        self.master.destroy()
-        root = Tk()
-        app = GerenciadorApp(root)
-        root.mainloop()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():

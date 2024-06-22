@@ -1,12 +1,14 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 from Funcionario import Funcionario
 
 class GerenciadorFuncionarios:
-    def __init__(self, master, funcionarios, salvar_dados_callback):
+    def __init__(self, master, funcionarios, salvar_dados_callback, voltar_callback):
         self.master = master
         self.funcionarios = funcionarios
         self.salvar_dados_callback = salvar_dados_callback
+        self.voltar_callback = voltar_callback
 
     def menu_funcionarios(self):
         self.limpar_tela()
@@ -26,7 +28,7 @@ class GerenciadorFuncionarios:
         btn_remover_funcionario = Button(frame_botoes, text="Remover Funcionário", font=("Albert Sans", 14), command=self.remover_funcionario)
         btn_remover_funcionario.grid(row=1, column=0, columnspan=2, pady=10)
 
-        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.grid(row=2, column=0, columnspan=2, pady=10)
 
     def adicionar_funcionario(self):
@@ -80,7 +82,7 @@ class GerenciadorFuncionarios:
             lbl_aviso = Label(frame_lista, text="Não há funcionários cadastrados.", font=("Albert Sans", 14), bg="#f0f0f0")
             lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
-        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.pack()
 
     def remover_funcionario(self):
@@ -109,13 +111,6 @@ class GerenciadorFuncionarios:
 
         btn_remover = Button(window, text="Remover", font=("Albert Sans", 14), command=remover)
         btn_remover.pack(pady=10)
-
-    def voltar(self):
-        from gerenciador_app import GerenciadorApp
-        self.master.destroy()
-        root = Tk()
-        app = GerenciadorApp(root)
-        root.mainloop()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():

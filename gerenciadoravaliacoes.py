@@ -1,10 +1,11 @@
 from tkinter import *
 
 class GerenciadorAvaliacoes:
-    def __init__(self, master, avaliacoes, salvar_dados_callback):
+    def __init__(self, master, avaliacoes, salvar_dados_callback, voltar_callback):
         self.master = master
         self.avaliacoes = avaliacoes
         self.salvar_dados_callback = salvar_dados_callback
+        self.voltar_callback = voltar_callback
 
     def menu_avaliacoes(self):
         self.limpar_tela()
@@ -23,15 +24,8 @@ class GerenciadorAvaliacoes:
             lbl_aviso = Label(frame_lista, text="Não há avaliações cadastradas.", font=("Albert Sans", 14), bg="#f0f0f0")
             lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
-        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.pack()
-
-    def voltar(self):
-        from gerenciador_app import GerenciadorApp
-        self.master.destroy()
-        root = Tk()
-        app = GerenciadorApp(root)
-        root.mainloop()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():

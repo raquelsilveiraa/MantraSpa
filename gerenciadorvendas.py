@@ -1,13 +1,15 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 from Vendas import Vendas
 
 class GerenciadorVendas:
-    def __init__(self, master, servicos, vendas, salvar_dados_callback):
+    def __init__(self, master, servicos, vendas, salvar_dados_callback, voltar_callback):
         self.master = master
         self.servicos = servicos
         self.vendas = vendas
         self.salvar_dados_callback = salvar_dados_callback
+        self.voltar_callback = voltar_callback
 
     def menu_vendas(self):
         self.limpar_tela()
@@ -24,7 +26,7 @@ class GerenciadorVendas:
         btn_exibir_fluxo_de_caixa = Button(frame_botoes, text="Exibir Fluxo de Caixa", font=("Albert Sans", 14), command=self.exibir_fluxo_de_caixa)
         btn_exibir_fluxo_de_caixa.grid(row=0, column=1, padx=10)
 
-        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.grid(row=1, column=0, columnspan=2, pady=10)
 
     def registrar_venda(self):
@@ -79,15 +81,8 @@ class GerenciadorVendas:
             lbl_aviso = Label(frame_lista, text="Não há registros de vendas.", font=("Albert Sans", 14), bg="#f0f0f0")
             lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
-        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.pack()
-
-    def voltar(self):
-        from gerenciador_app import GerenciadorApp
-        self.master.destroy()
-        root = Tk()
-        app = GerenciadorApp(root)
-        root.mainloop()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():

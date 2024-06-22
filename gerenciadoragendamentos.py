@@ -3,11 +3,12 @@ from tkinter import messagebox
 from Agenda import Agenda
 
 class GerenciadorAgendamentos:
-    def __init__(self, master, agenda, servicos, salvar_dados_callback):
+    def __init__(self, master, agenda, servicos, salvar_dados_callback, voltar_callback):
         self.master = master
         self.agenda = agenda
         self.servicos = servicos
         self.salvar_dados_callback = salvar_dados_callback
+        self.voltar_callback = voltar_callback
         self.data_var = StringVar()
         self.horario_var = StringVar()
         self.cliente_var = StringVar()
@@ -27,7 +28,7 @@ class GerenciadorAgendamentos:
         btn_ver_horarios = Button(frame_botoes, text="Ver Horários Agendados", font=("Albert Sans", 18), command=self.ver_horarios_agendados, bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
         btn_ver_horarios.grid(row=0, column=1, padx=10)
 
-        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 18), command=self.voltar, bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
+        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 18), command=self.voltar_callback, bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
         btn_voltar.grid(row=1, column=0, columnspan=2, pady=10)
 
     def agendar_servico(self):
@@ -106,13 +107,6 @@ class GerenciadorAgendamentos:
                 lbl_agendamento.pack(anchor="w", padx=10, pady=5)
         else:
             messagebox.showinfo("Informação", "Não há horários agendados.")
-
-    def voltar(self):
-        from gerenciador_app import GerenciadorApp
-        self.master.destroy()
-        root = Tk()
-        app = GerenciadorApp(root)
-        root.mainloop()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():

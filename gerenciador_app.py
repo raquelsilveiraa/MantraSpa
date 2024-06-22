@@ -74,23 +74,25 @@ class GerenciadorApp:
         lbl_usuario = Label(frame_login, text="Usuário:", font=("Albert Sans", 18), bg="#f0f0f0")
         lbl_usuario.grid(row=0, column=0, pady=10, sticky=E)
 
-        entry_usuario = Entry(frame_login, font=("Albert Sans", 18))
-        entry_usuario.grid(row=0, column=1, pady=10, padx=10)
+        self.entry_usuario = Entry(frame_login, font=("Albert Sans", 18))
+        self.entry_usuario.grid(row=0, column=1, pady=10, padx=10)
 
         lbl_senha = Label(frame_login, text="Senha:", font=("Albert Sans", 18), bg="#f0f0f0")
         lbl_senha.grid(row=1, column=0, pady=10, sticky=E)
 
-        entry_senha = Entry(frame_login, font=("Albert Sans", 18), show="*")
-        entry_senha.grid(row=1, column=1, pady=10, padx=10)
+        self.entry_senha = Entry(frame_login, font=("Albert Sans", 18), show="*")
+        self.entry_senha.grid(row=1, column=1, pady=10, padx=10)
 
-        btn_login = Button(frame_login, text="Login", font=("Albert Sans", 18), command=lambda: self.validar_login(entry_usuario.get(), entry_senha.get()), bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
+        btn_login = Button(frame_login, text="Login", font=("Albert Sans", 18), command=self.validar_login, bg="#FFC0CB", fg="black", padx=20, pady=10, bd=0, relief=FLAT)
         btn_login.grid(row=2, column=0, columnspan=2, pady=20)
 
-    def validar_login(self, usuario, senha):
-         if usuario == "admin" and senha == "123456":
-             self.menu_principal()
-         else:
-              messagebox.showerror("Erro", "Usuário ou senha incorretos.")
+    def validar_login(self):
+        usuario = self.entry_usuario.get()
+        senha = self.entry_senha.get()
+        if usuario == "admin" and senha == "123456":
+            self.menu_principal()
+        else:
+            messagebox.showerror("Erro", "Usuário ou senha incorretos.")
 
     def menu_principal(self):
         self.limpar_tela()
@@ -133,22 +135,22 @@ class GerenciadorApp:
             widget.destroy()
 
     def menu_servicos(self):
-        GerenciadorServicos(self.master, self.servicos, self.salvar_dados).menu_servicos()
+        GerenciadorServicos(self.master, self.servicos, self.salvar_dados, self.menu_principal).menu_servicos()
 
     def menu_funcionarios(self):
-        GerenciadorFuncionarios(self.master, self.funcionarios, self.salvar_dados).menu_funcionarios()
+        GerenciadorFuncionarios(self.master, self.funcionarios, self.salvar_dados, self.menu_principal).menu_funcionarios()
 
     def menu_vendas(self):
-        GerenciadorVendas(self.master, self.servicos, self.vendas, self.salvar_dados).menu_vendas()
+        GerenciadorVendas(self.master, self.servicos, self.vendas, self.salvar_dados, self.menu_principal).menu_vendas()
 
     def menu_agendamentos(self):
-        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.salvar_dados).menu_agendamentos()
+        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.salvar_dados, self.menu_principal).menu_agendamentos()
 
     def menu_promocoes(self):
-        GerenciadorPromocoes(self.master, self.promocoes, self.salvar_dados).menu_promocoes()
+        GerenciadorPromocoes(self.master, self.promocoes, self.salvar_dados, self.menu_principal).menu_promocoes()
 
     def menu_avaliacoes(self):
-        GerenciadorAvaliacoes(self.master, self.avaliacoes, self.salvar_dados).menu_avaliacoes()
+        GerenciadorAvaliacoes(self.master, self.avaliacoes, self.salvar_dados, self.menu_principal).menu_avaliacoes()
 
     def menu_ver_horarios(self):
-        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.salvar_dados).ver_horarios_agendados()
+        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.salvar_dados, self.menu_principal).ver_horarios_agendados()

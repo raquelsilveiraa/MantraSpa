@@ -2,10 +2,11 @@ from tkinter import *
 from tkinter import messagebox
 
 class GerenciadorPromocoes:
-    def __init__(self, master, promocoes, salvar_dados_callback):
+    def __init__(self, master, promocoes, salvar_dados_callback, voltar_callback):
         self.master = master
         self.promocoes = promocoes
         self.salvar_dados_callback = salvar_dados_callback
+        self.voltar_callback = voltar_callback
 
     def menu_promocoes(self):
         self.limpar_tela()
@@ -25,7 +26,7 @@ class GerenciadorPromocoes:
         btn_remover_promocao = Button(frame_botoes, text="Remover Promoção", font=("Albert Sans", 14), command=self.remover_promocao)
         btn_remover_promocao.grid(row=1, column=0, columnspan=2, pady=10)
 
-        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(frame_botoes, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.grid(row=2, column=0, columnspan=2, pady=10)
 
     def adicionar_promocao(self):
@@ -70,7 +71,7 @@ class GerenciadorPromocoes:
             lbl_aviso = Label(frame_lista, text="Não há promoções cadastradas.", font=("Albert Sans", 14), bg="#f0f0f0")
             lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
-        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar)
+        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.pack()
 
     def remover_promocao(self):
@@ -100,13 +101,6 @@ class GerenciadorPromocoes:
 
         btn_remover = Button(window, text="Remover", font=("Albert Sans", 14), command=remover)
         btn_remover.pack(pady=20)
-
-    def voltar(self):
-        from gerenciador_app import GerenciadorApp
-        self.master.destroy()
-        root = Tk()
-        app = GerenciadorApp(root)
-        root.mainloop()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():
