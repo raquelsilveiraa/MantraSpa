@@ -34,8 +34,9 @@ Este é um protótipo de um sistema de gerenciamento para o Mantra SPA. Ele perm
 
    - Para esse projeto não será necessário, foi usado tudo disponivel no: 
        - Python 3.12 ou superior
-
 ## Uso
+
+### Iniciar o Sistema de Gerenciamento
 
 1. Inicie o aplicativo:
 
@@ -47,6 +48,23 @@ Este é um protótipo de um sistema de gerenciamento para o Mantra SPA. Ele perm
 
     - **Usuário:** admin
     - **Senha:** 123456
+
+### Visualizar o Banco de Dados
+
+Para visualizar o conteúdo do banco de dados de forma gráfica:
+
+1. Execute o script de visualização:
+
+    ```sh
+    python verificadorbancodedados.py
+    ```
+
+2. Uma janela será aberta onde você poderá:
+    - Selecionar as tabelas disponíveis na lista à esquerda.
+    - Ver os registros da tabela selecionada em uma tabela à direita.
+    - Clicar em um registro para ver os detalhes completos em uma janela pop-up.
+    - Atualizar a visualização clicando no botão "Atualizar".
+    - Fechar a aplicação clicando no botão "Fechar".
 
 ## Estrutura do Projeto
 
@@ -63,6 +81,7 @@ Este é um protótipo de um sistema de gerenciamento para o Mantra SPA. Ele perm
 - `Vendas.py`: Modelo para vendas.
 - `Agenda.py`: Modelo para agendamentos.
 - `database.py`: Classe para gerenciar a conexão e estrutura do banco de dados SQLite.
+- `verificadorbancodedados.py`: Script para visualizar o conteúdo do banco de dados SQLite de forma gráfica.
 
 ## Banco de Dados
 
