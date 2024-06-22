@@ -75,14 +75,25 @@ class GerenciadorVendas:
 
         if registros:
             for i, registro in enumerate(registros):
-                lbl_registro = Label(frame_lista, text=registro, font=("Albert Sans", 14), bg="#f0f0f0", wraplength=600, justify="left")
-                lbl_registro.grid(row=i, column=0, padx=10, pady=5, sticky="w")
+                frame_registro = Frame(frame_lista, bg="#f0f0f0")
+                frame_registro.pack(fill=X, pady=5)
+
+                lbl_registro = Label(frame_registro, text=registro['texto'], font=("Albert Sans", 14), bg="#f0f0f0", wraplength=600, justify="left")
+                lbl_registro.pack(side=LEFT, padx=10)
+
+                btn_remover = Button(frame_registro, text="Remover", font=("Albert Sans", 12), command=lambda reg_id=registro['id']: self.remover_venda(reg_id))
+                btn_remover.pack(side=RIGHT, padx=10)
         else:
             lbl_aviso = Label(frame_lista, text="Não há registros de vendas.", font=("Albert Sans", 14), bg="#f0f0f0")
             lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
 
         btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
         btn_voltar.pack()
+
+    def remover_venda(self, venda_id):
+        self.vendas.remover_venda(venda_id)
+        messagebox.showinfo("Sucesso", "Venda removida com sucesso.")
+        self.exibir_fluxo_de_caixa()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():

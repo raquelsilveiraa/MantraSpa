@@ -57,10 +57,12 @@ class Database:
 
     def atualizar_tabelas(self):
         with self.conn:
-            # Adiciona a coluna 'servico' se ela não existir na tabela Vendas
             cursor = self.conn.execute("PRAGMA table_info(Vendas)")
             columns = [info[1] for info in cursor.fetchall()]
             if 'servico' not in columns:
                 self.conn.execute('''
                     ALTER TABLE Vendas ADD COLUMN servico TEXT
                 ''')
+
+    def close(self):
+        self.conn.close()

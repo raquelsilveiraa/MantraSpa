@@ -88,24 +88,38 @@ class GerenciadorAgendamentos:
         btn_agendar.pack(pady=20)
 
     def ver_horarios_agendados(self):
+        self.limpar_tela()
+
+        lbl_titulo = Label(self.master, text="Horários Agendados", font=("Albert Sans", 36, "bold"), bg="#FFC0CB", fg="black", padx=20, pady=10)
+        lbl_titulo.pack(fill=X)
+
+        frame_lista = Frame(self.master, bg="#f0f0f0", padx=20, pady=20)
+        frame_lista.pack(pady=20)
+
         agendamentos = self.agenda.carregar_agendamentos()
+
         if agendamentos:
-            window = Toplevel(self.master)
-            window.title("Horários Agendados")
-            window.geometry("400x400")
-            window.configure(bg="#f0f0f0")
+            for i, agendamento in enumerate(agendamentos):
+                frame_agendamento = Frame(frame_lista, bg="#f0f0f0")
+                frame_agendamento.pack(fill=X, pady=5)
 
-            frame_agendamentos = Frame(window, bg="#f0f0f0")
-            frame_agendamentos.pack(padx=20, pady=20)
+                servico_nome = next((servico.nome for servico in self.servicos if servico.id == agendamento["servico_id"]), "Desconhecido")
+                lbl_agendamento = Label(frame_agendamento, text=f"{agendamento['data']} às {agendamento['horario']}: {servico_nome} - Cliente: {agendamento['cliente']}", font=("Albert Sans", 14), bg="#f0f0f0", wraplength=600, justify="left")
+                lbl_agendamento.pack(side=LEFT, padx=10)
 
-            lbl_titulo = Label(frame_agendamentos, text="Horários Agendados", font=("Albert Sans", 18, "bold"), bg="#f0f0f0")
-            lbl_titulo.pack(pady=10)
-
-            for agendamento in agendamentos:
-                lbl_agendamento = Label(frame_agendamentos, text=f"{agendamento['data']} às {agendamento['horario']}: {agendamento['servico']['nome']} - Cliente: {agendamento['cliente']}", font=("Albert Sans", 12), bg="#f0f0f0")
-                lbl_agendamento.pack(anchor="w", padx=10, pady=5)
+                btn_remover = Button(frame_agendamento, text="Remover", font=("Albert Sans", 12), command=lambda ag_id=agendamento['id']: self.remover_agendamento(ag_id))
+                btn_remover.pack(side=RIGHT, padx=10)
         else:
-            messagebox.showinfo("Informação", "Não há horários agendados.")
+            lbl_aviso = Label(frame_lista, text="Não há horários agendados.", font=("Albert Sans", 14), bg="#f0f0f0")
+            lbl_aviso.grid(row=0, column=0, padx=10, pady=5)
+
+        btn_voltar = Button(self.master, text="Voltar", font=("Albert Sans", 14), command=self.voltar_callback)
+        btn_voltar.pack()
+
+    def remover_agendamento(self, agendamento_id):
+        self.agenda.remover_agendamento(agendamento_id)
+        messagebox.showinfo("Sucesso", "Agendamento removido com sucesso.")
+        self.ver_horarios_agendados()
 
     def limpar_tela(self):
         for widget in self.master.winfo_children():
