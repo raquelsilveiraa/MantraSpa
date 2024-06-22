@@ -1,10 +1,10 @@
 from tkinter import *
 
 class GerenciadorAvaliacoes:
-    def __init__(self, master, avaliacoes, salvar_dados_callback, voltar_callback):
+    def __init__(self, master, avaliacoes, db, voltar_callback):
         self.master = master
         self.avaliacoes = avaliacoes
-        self.salvar_dados_callback = salvar_dados_callback
+        self.db = db
         self.voltar_callback = voltar_callback
 
     def menu_avaliacoes(self):

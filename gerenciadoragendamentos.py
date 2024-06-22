@@ -3,11 +3,11 @@ from tkinter import messagebox
 from Agenda import Agenda
 
 class GerenciadorAgendamentos:
-    def __init__(self, master, agenda, servicos, salvar_dados_callback, voltar_callback):
+    def __init__(self, master, agenda, servicos, db, voltar_callback):
         self.master = master
         self.agenda = agenda
         self.servicos = servicos
-        self.salvar_dados_callback = salvar_dados_callback
+        self.db = db
         self.voltar_callback = voltar_callback
         self.data_var = StringVar()
         self.horario_var = StringVar()
@@ -49,7 +49,6 @@ class GerenciadorAgendamentos:
             mensagem = self.agenda.agendar_servico(servico, data, horario, cliente)
 
             if "sucesso" in mensagem:
-                self.salvar_dados_callback()
                 window_agendar.destroy()
             messagebox.showinfo("Informação", mensagem)
 

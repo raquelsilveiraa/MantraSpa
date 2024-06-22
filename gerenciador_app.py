@@ -1,5 +1,4 @@
 from tkinter import *
-import json
 from tkinter import messagebox
 from Servico import Servico
 from Funcionario import Funcionario
@@ -11,6 +10,7 @@ from gerenciadorvendas import GerenciadorVendas
 from gerenciadoragendamentos import GerenciadorAgendamentos
 from gerenciadorpromocoes import GerenciadorPromocoes
 from gerenciadoravaliacoes import GerenciadorAvaliacoes
+from database import Database
 
 class GerenciadorApp:
     def __init__(self, master):
@@ -19,10 +19,12 @@ class GerenciadorApp:
         self.master.geometry("800x600")
         self.master.configure(bg="#f0f0f0")
 
-        self.servicos = []
-        self.funcionarios = []
-        self.agenda = Agenda()
-        self.vendas = Vendas()
+        self.db = Database()
+
+        self.servicos = Servico.carregar_servicos(self.db)
+        self.funcionarios = Funcionario.carregar_funcionarios(self.db)
+        self.agenda = Agenda(self.db)
+        self.vendas = Vendas(self.db)
         self.avaliacoes = []
         self.promocoes = []
 
@@ -30,37 +32,11 @@ class GerenciadorApp:
         self.menu_login()
 
     def carregar_dados(self):
-        try:
-            with open("dados.json", "r") as file:
-                dados = json.load(file)
-                self.servicos = [Servico(**servico) for servico in dados["servicos"]]
-                self.funcionarios = [Funcionario(**funcionario) for funcionario in dados["funcionarios"]]
-                self.vendas.fluxo_de_caixa = dados.get("vendas", [])
-                self.avaliacoes = dados.get("avaliacoes", [])
-                self.promocoes = dados.get("promocoes", [])
-        except FileNotFoundError:
-            pass
+        cursor = self.db.conn.execute("SELECT descricao FROM Promocoes")
+        self.promocoes = [row[0] for row in cursor.fetchall()]
 
-    def salvar_dados(self):
-        dados = {
-            "servicos": [vars(servico) for servico in self.servicos],
-            "funcionarios": [vars(funcionario) for funcionario in self.funcionarios],
-            "vendas": self.vendas.fluxo_de_caixa,
-            "avaliacoes": self.avaliacoes,
-            "promocoes": self.promocoes,
-            "agendamentos": []
-        }
-        for data, horarios in self.agenda.horarios_disponiveis.items():
-            for horario, servico, cliente in horarios:
-                agendamento = {
-                    "data": data,
-                    "horario": horario,
-                    "servico": vars(servico),
-                    "cliente": cliente
-                }
-                dados["agendamentos"].append(agendamento)
-        with open("dados.json", "w") as file:
-            json.dump(dados, file, indent=4)
+        cursor = self.db.conn.execute("SELECT cliente, avaliacao FROM Avaliacoes")
+        self.avaliacoes = [{"cliente": row[0], "avaliacao": row[1]} for row in cursor.fetchall()]
 
     def menu_login(self):
         self.limpar_tela()
@@ -127,7 +103,7 @@ class GerenciadorApp:
         self.master.protocol("WM_DELETE_WINDOW", self.fechar_aplicacao)
 
     def fechar_aplicacao(self):
-        self.salvar_dados()
+        self.db.close()
         self.master.destroy()
 
     def limpar_tela(self):
@@ -135,22 +111,22 @@ class GerenciadorApp:
             widget.destroy()
 
     def menu_servicos(self):
-        GerenciadorServicos(self.master, self.servicos, self.salvar_dados, self.menu_principal).menu_servicos()
+        GerenciadorServicos(self.master, self.servicos, self.db, self.menu_principal).menu_servicos()
 
     def menu_funcionarios(self):
-        GerenciadorFuncionarios(self.master, self.funcionarios, self.salvar_dados, self.menu_principal).menu_funcionarios()
+        GerenciadorFuncionarios(self.master, self.funcionarios, self.db, self.menu_principal).menu_funcionarios()
 
     def menu_vendas(self):
-        GerenciadorVendas(self.master, self.servicos, self.vendas, self.salvar_dados, self.menu_principal).menu_vendas()
+        GerenciadorVendas(self.master, self.servicos, self.vendas, self.db, self.menu_principal).menu_vendas()
 
     def menu_agendamentos(self):
-        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.salvar_dados, self.menu_principal).menu_agendamentos()
+        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.db, self.menu_principal).menu_agendamentos()
 
     def menu_promocoes(self):
-        GerenciadorPromocoes(self.master, self.promocoes, self.salvar_dados, self.menu_principal).menu_promocoes()
+        GerenciadorPromocoes(self.master, self.promocoes, self.db, self.menu_principal).menu_promocoes()
 
     def menu_avaliacoes(self):
-        GerenciadorAvaliacoes(self.master, self.avaliacoes, self.salvar_dados, self.menu_principal).menu_avaliacoes()
+        GerenciadorAvaliacoes(self.master, self.avaliacoes, self.db, self.menu_principal).menu_avaliacoes()
 
     def menu_ver_horarios(self):
-        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.salvar_dados, self.menu_principal).ver_horarios_agendados()
+        GerenciadorAgendamentos(self.master, self.agenda, self.servicos, self.db, self.menu_principal).ver_horarios_agendados()

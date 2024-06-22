@@ -1,14 +1,14 @@
 from tkinter import *
 from tkinter import messagebox
-from tkinter import ttk
 from Vendas import Vendas
+from tkinter import ttk
 
 class GerenciadorVendas:
-    def __init__(self, master, servicos, vendas, salvar_dados_callback, voltar_callback):
+    def __init__(self, master, servicos, vendas, db, voltar_callback):
         self.master = master
         self.servicos = servicos
         self.vendas = vendas
-        self.salvar_dados_callback = salvar_dados_callback
+        self.db = db
         self.voltar_callback = voltar_callback
 
     def menu_vendas(self):
@@ -32,18 +32,18 @@ class GerenciadorVendas:
     def registrar_venda(self):
         def registrar():
             valor = entry_valor.get()
-            servico = self.servicos[combo_servicos.current()]
-            if valor and servico:
+            servico_selecionado = combo_servicos.current()
+            if valor and servico_selecionado >= 0:
+                servico = self.servicos[servico_selecionado]
                 resultado = self.vendas.registrar_venda(valor, servico)
                 messagebox.showinfo("Sucesso", resultado)
-                self.salvar_dados_callback()
                 window.destroy()
             else:
                 messagebox.showwarning("Erro", "Por favor, preencha todos os campos.")
 
         window = Toplevel(self.master)
         window.title("Registrar Venda")
-        window.geometry("400x200")
+        window.geometry("400x300")
         window.configure(bg="#f0f0f0")
 
         frame = Frame(window, bg="#f0f0f0")

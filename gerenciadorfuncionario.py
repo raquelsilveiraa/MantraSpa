@@ -1,13 +1,12 @@
 from tkinter import *
 from tkinter import messagebox
-from tkinter import ttk
 from Funcionario import Funcionario
 
 class GerenciadorFuncionarios:
-    def __init__(self, master, funcionarios, salvar_dados_callback, voltar_callback):
+    def __init__(self, master, funcionarios, db, voltar_callback):
         self.master = master
         self.funcionarios = funcionarios
-        self.salvar_dados_callback = salvar_dados_callback
+        self.db = db
         self.voltar_callback = voltar_callback
 
     def menu_funcionarios(self):
@@ -37,9 +36,9 @@ class GerenciadorFuncionarios:
             cargo = entry_cargo.get()
             if nome and cargo:
                 funcionario = Funcionario(nome, cargo)
+                funcionario.salvar(self.db)
                 self.funcionarios.append(funcionario)
                 messagebox.showinfo("Sucesso", "Funcionário adicionado com sucesso.")
-                self.salvar_dados_callback()
                 window.destroy()
             else:
                 messagebox.showwarning("Erro", "Por favor, preencha todos os campos.")
@@ -89,9 +88,9 @@ class GerenciadorFuncionarios:
         def remover():
             index = combo_funcionarios.current()
             if index >= 0:
-                del self.funcionarios[index]
+                funcionario = self.funcionarios.pop(index)
+                funcionario.deletar(self.db)
                 messagebox.showinfo("Sucesso", "Funcionário removido com sucesso.")
-                self.salvar_dados_callback()
                 window.destroy()
             else:
                 messagebox.showwarning("Erro", "Por favor, selecione um funcionário.")

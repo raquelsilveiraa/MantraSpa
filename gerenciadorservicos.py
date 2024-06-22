@@ -3,10 +3,10 @@ from tkinter import messagebox
 from Servico import Servico
 
 class GerenciadorServicos:
-    def __init__(self, master, servicos, salvar_dados_callback, voltar_callback):
+    def __init__(self, master, servicos, db, voltar_callback):
         self.master = master
         self.servicos = servicos
-        self.salvar_dados_callback = salvar_dados_callback
+        self.db = db
         self.voltar_callback = voltar_callback
 
     def menu_servicos(self):
@@ -42,9 +42,9 @@ class GerenciadorServicos:
                 return
 
             servico = Servico(nome, descricao, beneficios, local)
+            servico.salvar(self.db)
             self.servicos.append(servico)
             messagebox.showinfo("Sucesso", "Serviço adicionado com sucesso.")
-            self.salvar_dados_callback()
             window_add_servico.destroy()
 
         window_add_servico = Toplevel(self.master)
@@ -106,9 +106,9 @@ class GerenciadorServicos:
                 messagebox.showerror("Erro", "Por favor, selecione um serviço.")
                 return
             indice = servico_selecionado[0]
-            self.servicos.pop(indice)
+            servico = self.servicos.pop(indice)
+            servico.deletar(self.db)
             messagebox.showinfo("Sucesso", "Serviço removido com sucesso.")
-            self.salvar_dados_callback()
             window_remover_servico.destroy()
             self.menu_servicos()
 

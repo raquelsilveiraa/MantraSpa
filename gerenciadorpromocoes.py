@@ -2,10 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 
 class GerenciadorPromocoes:
-    def __init__(self, master, promocoes, salvar_dados_callback, voltar_callback):
+    def __init__(self, master, promocoes, db, voltar_callback):
         self.master = master
         self.promocoes = promocoes
-        self.salvar_dados_callback = salvar_dados_callback
+        self.db = db
         self.voltar_callback = voltar_callback
 
     def menu_promocoes(self):
@@ -33,9 +33,13 @@ class GerenciadorPromocoes:
         def adicionar():
             descricao = entry_descricao.get("1.0", "end-1c")
             if descricao:
+                with self.db.conn:
+                    self.db.conn.execute('''
+                        INSERT INTO Promocoes (descricao)
+                        VALUES (?)
+                    ''', (descricao,))
                 self.promocoes.append(descricao)
                 messagebox.showinfo("Sucesso", "Promoção adicionada com sucesso.")
-                self.salvar_dados_callback()
                 window.destroy()
             else:
                 messagebox.showwarning("Erro", "Por favor, preencha todos os campos.")
@@ -78,9 +82,12 @@ class GerenciadorPromocoes:
         def remover():
             index = listbox_promocoes.curselection()
             if index:
-                del self.promocoes[index[0]]
+                descricao = self.promocoes.pop(index[0])
+                with self.db.conn:
+                    self.db.conn.execute('''
+                        DELETE FROM Promocoes WHERE descricao = ?
+                    ''', (descricao,))
                 messagebox.showinfo("Sucesso", "Promoção removida com sucesso.")
-                self.salvar_dados_callback()
                 window.destroy()
             else:
                 messagebox.showwarning("Erro", "Por favor, selecione uma promoção.")
