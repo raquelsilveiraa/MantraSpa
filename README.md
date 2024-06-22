@@ -1,78 +1,77 @@
 # Mantra SPA - Sistema de Gerenciamento
 
-## Descrição do Projeto
+## Descrição
 
-O **Mantra SPA** é um sistema de gerenciamento completo desenvolvido para facilitar a administração de serviços, agendamentos, funcionários, vendas, promoções e avaliações. A aplicação foi desenvolvida utilizando Python com a biblioteca Tkinter para a interface gráfica, proporcionando uma experiência de usuário amigável e intuitiva.
+Este é um protótipo de um sistema de gerenciamento para o Mantra SPA. Ele permite gerenciar serviços, funcionários, vendas, agendamentos, promoções e avaliações. O sistema foi desenvolvido utilizando Python e Tkinter para a interface gráfica, e SQLite para o banco de dados.
 
-### Funcionalidades Principais
+## Requisitos
 
-1. **Gerenciamento de Serviços**:
-   - Adicionar, listar e remover serviços oferecidos pelo SPA.
-   - Exibir detalhes completos de cada serviço.
+- Python 3.12 ou superior
 
-2. **Gerenciamento de Agendamentos**:
-   - Agendar serviços para clientes, verificando a disponibilidade de horários.
-   - Visualizar todos os horários agendados.
+## Instalação
 
-3. **Gerenciamento de Funcionários**:
-   - Adicionar, listar e remover funcionários.
-   - Exibir detalhes dos funcionários.
+1. Clone o repositório para o seu computador:
 
-4. **Gerenciamento de Vendas**:
-   - Registrar vendas de serviços.
-   - Exibir o fluxo de caixa com detalhes das vendas.
-
-5. **Gerenciamento de Promoções**:
-   - Adicionar, listar e remover promoções disponíveis.
-
-6. **Visualização de Avaliações**:
-   - Exibir avaliações de clientes sobre os serviços prestados.
-
-### Estrutura do Projeto
-
-O projeto está organizado da seguinte forma:
-
-## mantra_spa/
-├── Agenda.py
-├── dados.json
-├── Funcionario.py
-├── GerenciadorApp.py
-├── readme.md
-├── Servico.py
-├── Vendas.py
-
-
-- **GerenciadorApp.py**: Contém todo o código-fonte da aplicação onde você abre a aplicação.
-- **readme.md**: Este arquivo, contendo a documentação do projeto.
-- **dados.json**: Arquivo utilizado para armazenamento persistente de dados.
-
-## Requisitos para Rodar o Projeto
-
-Para rodar o projeto, você precisará ter o seguinte instalado em sua máquina:
-
-- **Python 3.x**: A linguagem de programação utilizada para desenvolver o projeto.
-- **Tkinter**: Biblioteca padrão do Python para a criação de interfaces gráficas.
-
-### Passos para Instalação
-
-1. **Clone o repositório**:
-
-   ```sh
-   git clone https://github.com/raquelsilveiraa/MantraSpa.git
-   cd mantra_spa
-
-2. Executar o arquivo :
-### GerenciadorApp.py
-
-3. Verifique se o Python está instalado:
     ```sh
-    python --version
+    git clone https://github.com/raquelsilveiraa/MantraSpa.git
+    ```
 
-4. Execute o projeto
-### No terminal, dentro do diretório do projeto, execute:
-   ```sh
-     python GerenciadorApp.py 
+2. Navegue até o diretório do projeto:
 
-Garanta que a estrutura está assim:
-MantraSpa/GerenciadorApp.py
+    ```sh
+    cd MantraSpa
+    ```
 
+3. Crie e ative um ambiente virtual (opcional, mas recomendado):
+
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # Para Linux e macOS
+    venv\Scripts\activate  # Para Windows
+    ```
+
+4. Instale as dependências do projeto:
+
+   - Para esse projeto não será necessário, foi usado tudo disponivel no: 
+       - Python 3.12 ou superior
+
+## Uso
+
+1. Inicie o aplicativo:
+
+    ```sh
+    python main.py
+    ```
+
+2. Faça login com as credenciais:
+
+    - **Usuário:** admin
+    - **Senha:** 123456
+
+## Estrutura do Projeto
+
+- `main.py`: Script principal para iniciar o aplicativo.
+- `gerenciador_app.py`: Classe principal que gerencia a aplicação e navegação entre os menus.
+- `gerenciadorservicos.py`: Classe para gerenciar serviços.
+- `gerenciadorfuncionario.py`: Classe para gerenciar funcionários.
+- `gerenciadorvendas.py`: Classe para gerenciar vendas.
+- `gerenciadoragendamentos.py`: Classe para gerenciar agendamentos.
+- `gerenciadorpromocoes.py`: Classe para gerenciar promoções.
+- `gerenciadoravaliacoes.py`: Classe para gerenciar avaliações.
+- `Servico.py`: Modelo para serviços.
+- `Funcionario.py`: Modelo para funcionários.
+- `Vendas.py`: Modelo para vendas.
+- `Agenda.py`: Modelo para agendamentos.
+- `database.py`: Classe para gerenciar a conexão e estrutura do banco de dados SQLite.
+
+## Banco de Dados
+
+O projeto utiliza SQLite como banco de dados. O arquivo do banco de dados (`mantra_spa.db`) será criado automaticamente na primeira execução do aplicativo, e as tabelas necessárias serão configuradas.
+
+## Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests para melhorar o projeto.
+
+## Licença
+
+Este projeto está licenciado sob a MIT License. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
